@@ -9,6 +9,12 @@
             "strict_min_version": "78.0"
         }
     },
+    "icons": {
+      "128": "images/thread-in-folder-128px.png",
+      "64": "images/thread-in-folder-64px.png",
+      "32": "images/thread-in-folder-32px.png",
+      "16": "images/thread-in-folder-16px.png"
+    },
     "background": {
       "scripts": [
         "background.js"
