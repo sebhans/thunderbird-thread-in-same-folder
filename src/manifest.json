@@ -1,0 +1,23 @@
+{
+    "name": "Thread in same folder",
+    "description": "Runs after junk classification and filtering to make sure a message lands in the same folder as its parent in a thread",
+    "version": "1.0",
+    "author": "Petros Koutsolampros",
+    "applications": {
+        "gecko": {
+            "id": "threadInSameFolder@pklampros.io",
+            "strict_min_version": "78.0"
+        }
+    },
+    "background": {
+      "scripts": [
+        "background.js"
+      ]
+    },
+    "permissions": [
+        "messagesRead",
+        "accountsRead",
+        "messagesMove"
+    ],
+    "manifest_version": 2
+}
