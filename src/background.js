@@ -14,10 +14,14 @@ async function* iterateMessagePages(page) {
 }
 
 async function load() {
+    const isReasonableFolderForReply = function(folder) {
+        return !(folder.type === 'sent' || folder.type === 'trash');
+    }
+
     await messenger.messages.onNewMailReceived.addListener(async (folder, messages) => {
         for await (let message of iterateMessagePages(messages)) {
-            let full = await messenger.messages.getFull(message.id);
-            let inReplyTos = full["headers"]["in-reply-to"];
+            const full = await messenger.messages.getFull(message.id);
+            const inReplyTos = full["headers"]["in-reply-to"];
             if (inReplyTos.length > 0) {
                 let inReplyTo = inReplyTos[0]
                 if (inReplyTo.startsWith("<")) {
@@ -26,12 +30,13 @@ async function load() {
                 if (inReplyTo.endsWith(">")) {
                     inReplyTo = inReplyTo.substring(0, inReplyTo.length - 1)
                 }
-                let queryResult = await messenger.messages.query({"headerMessageId" : inReplyTo})
+                const queryResult = await messenger.messages.query({"headerMessageId" : inReplyTo})
                 if (queryResult.messages.length > 0) {
-                    let parent = queryResult.messages[0]
-		    if (parent['folder'] != message['folder']) {
-		        messenger.messages.move([message.id], parent['folder'])
-		    }
+                    const parent = queryResult.messages[0]
+                    const parentFolder = parent['folder']
+                    if (parentFolder != message['folder'] && isReasonableFolderForReply(parentFolder)) {
+                        messenger.messages.move([message.id], parentFolder)
+                    }
                 }
             }
         }
